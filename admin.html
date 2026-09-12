@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Mithai Magic - Owner Portal</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body class="admin-body">
+
+  <audio id="orderAudio" src="https://assets.mixkit.co/active_storage/sfx/2869/2869-preview.mp3" preload="auto"></audio>
+
+  <!-- Login Shield -->
+  <div class="login-wrapper" id="loginScreen">
+    <div class="login-card">
+      <div class="logo-badge sm">MM</div>
+      <h2>Mithai Magic Owner Portal</h2>
+      <p>Secure login for Charholi counter dispatch</p>
+      <form onsubmit="window.handleAdminLogin(event)">
+        <input type="email" id="adminEmail" placeholder="Owner Email" required>
+        <input type="password" id="adminPassword" placeholder="Owner Password" required>
+        <button type="submit" class="btn btn-primary btn-full">Authenticate &amp; Unlock</button>
+      </form>
+      <p id="loginError" class="error-msg"></p>
+    </div>
+  </div>
+
+  <!-- Protected Admin Workspace -->
+  <div class="admin-dashboard" id="adminDashboard" style="display: none;">
+    <header class="admin-nav">
+      <div>
+        <h2>Mithai Magic Dispatch</h2>
+        <span class="status-indicator"><span class="dot"></span> Live listening for orders...</span>
+      </div>
+      <button class="btn btn-outline" onclick="window.logoutAdmin()"><i class="fa-solid fa-arrow-right-from-bracket"></i> Exit</button>
+    </header>
+
+    <div class="admin-grid">
+      
+      <!-- Live Orders Queue -->
+      <div class="admin-panel">
+        <div class="panel-header">
+          <h3><i class="fa-solid fa-bell"></i> Incoming Orders</h3>
+          <span class="badge" id="orderCountBadge">0 Total</span>
+        </div>
+        <div class="orders-list" id="ordersList">
+          <p class="empty-msg">No active orders right now.</p>
+        </div>
+      </div>
+
+      <!-- Upload New Item via File -->
+      <div class="admin-panel">
+        <div class="panel-header">
+          <h3><i class="fa-solid fa-cloud-arrow-up"></i> Upload New Item</h3>
+        </div>
+        <form class="admin-form" onsubmit="window.addNewMithai(event)">
+          <label class="form-label">Mithai or Snack Name:</label>
+          <input type="text" id="mName" placeholder="e.g. Special Hot Samosa" required>
+
+          <!-- RATE FIELD: Accepts both numbers and text (pc, kg, 250g) -->
+          <label class="form-label">Rate / Price with Unit (Text &amp; Numbers):</label>
+          <input type="text" id="mRate" placeholder="e.g. 20 / pc, 170 / 250g, or 600 / kg" required>
+
+          <label class="form-label">Upload Photo from Phone:</label>
+          <input type="file" id="mImageFile" accept="image/*" required>
+          <small class="upload-note">Select any photo from your gallery or camera</small>
+
+          <label class="form-label" style="margin-top: 10px;">Short Description:</label>
+          <textarea id="mDesc" rows="2" placeholder="e.g. Crispy golden crust with spiced potato and peas" required></textarea>
+
+          <button type="submit" class="btn btn-primary btn-full" id="uploadBtn">
+            <i class="fa-solid fa-plus"></i> Upload &amp; List on Menu
+          </button>
+          <p id="uploadStatus" class="upload-status"></p>
+        </form>
+
+        <h4 style="margin: 24px 0 10px;">Currently Listed Counter Items</h4>
+        <div class="admin-items-list" id="adminItemsList"></div>
+      </div>
+
+    </div>
+  </div>
+
+  <script type="module" src="app.js"></script>
+</body>
+</html>

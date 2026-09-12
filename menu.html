@@ -1,0 +1,287 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Our Menu | Mithai Magic - Charholi Budruk</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@700;800;900&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+  <!-- Navigation -->
+  <header class="navbar">
+    <div class="nav-container">
+      <a href="index.html" class="brand-logo">
+        <div class="logo-badge">MM</div>
+        <div class="brand-text">
+          <span class="brand-title">MITHAI MAGIC</span>
+          <span class="brand-tagline">Magic In Every Bite</span>
+        </div>
+      </a>
+
+      <ul class="nav-links" id="navLinks">
+        <li><a href="index.html" class="nav-item">Home</a></li>
+        <li><a href="menu.html" class="nav-item active highlight-nav"><i class="fa-solid fa-utensils"></i> Our Menu</a></li>
+        <li><a href="contact.html" class="nav-item">Contact Us</a></li>
+        <li><a href="admin.html" class="nav-item admin-link" target="_blank"><i class="fa-solid fa-lock"></i> Staff</a></li>
+      </ul>
+
+      <div class="nav-actions">
+        <button class="cart-trigger" id="cartBtn" onclick="window.toggleCart()">
+          <i class="fa-solid fa-bag-shopping"></i>
+          <span class="cart-count" id="cartCount">0</span>
+        </button>
+        <button class="mobile-toggle" onclick="document.getElementById('navLinks').classList.toggle('active')">
+          <i class="fa-solid fa-bars"></i>
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <!-- Menu Banner -->
+  <section class="menu-hero">
+    <div class="menu-hero-content">
+      <span class="sub-badge"><i class="fa-solid fa-leaf"></i> 100% Vegetarian &amp; Fresh</span>
+      <h1>Our Counter Menu</h1>
+      <p>Prepared fresh today. Tap <strong>WhatsApp</strong> for takeaway orders, or <strong>Add to Box</strong> for home delivery across Charholi (min ₹550).</p>
+    </div>
+  </section>
+
+  <!-- Notice -->
+  <div class="delivery-notice">
+    <i class="fa-solid fa-truck-fast"></i>
+    <span><strong>Doorstep Delivery:</strong> Order value must be <strong>₹550 or above</strong> for home delivery across Charholi Budruk.</span>
+  </div>
+
+  <!-- Menu Grid (ONLY loads from Admin Database) -->
+  <main class="menu-container">
+    <div class="section-title">
+      <span>Fresh Items Available</span>
+      <h2>Today's Specials</h2>
+      <div class="gold-divider"></div>
+    </div>
+
+    <div class="menu-grid" id="productGrid">
+      <!-- Items load dynamically from Firestore via app.js -->
+      <div class="loading-state">
+        <i class="fa-solid fa-spinner fa-spin"></i>
+        <p>Loading counter items...</p>
+      </div>
+    </div>
+  </main>
+
+  <!-- Slide-out Cart Drawer -->
+  <div class="cart-drawer" id="cartDrawer">
+    <div class="cart-header">
+      <h3><i class="fa-solid fa-bag-shopping"></i> Your Delivery Box</h3>
+      <button class="close-btn" onclick="window.toggleCart()">&times;</button>
+    </div>
+    <div class="cart-body" id="cartItems">
+      <p class="empty-msg">Your delivery box is empty. Add items from the menu!</p>
+    </div>
+    <div class="cart-footer">
+      <div class="cart-summary">
+        <div class="summary-row">
+          <span>Total:</span>
+          <span id="cartSubtotal">₹0</span>
+        </div>
+        <div class="threshold-badge" id="deliveryEligibility">
+          <i class="fa-solid fa-circle-exclamation"></i> Add ₹550 or more for Doorstep Delivery
+        </div>
+      </div>
+      <form id="orderForm" onsubmit="window.submitCustomerOrder(event)">
+        <input type="text" id="custName" placeholder="Your Full Name" required>
+        <input type="tel" id="custPhone" placeholder="10-digit Phone Number" pattern="[0-9]{10}" required>
+        <textarea id="custAddress" rows="2" placeholder="Delivery Address in Charholi (Pune-412105)" required></textarea>
+        <button type="submit" class="btn btn-primary btn-full" id="placeOrderBtn" disabled>
+          Min Order ₹550 Needed
+        </button>
+      </form>
+    </div>
+  </div>
+  <div class="cart-backdrop" id="cartBackdrop" onclick="window.toggleCart()"></div>
+
+  <!-- Footer -->
+  <footer>
+    <div class="footer-container">
+      <div class="footer-col">
+        <div class="logo-badge sm">MM</div>
+        <h3 style="color:#f5d061; margin: 10px 0;">Mithai Magic</h3>
+        <p>Charholi Budruk, Pune, Maharashtra - 412105</p>
+      </div>
+      <div class="footer-col">
+        <h4>Need Instant Help?</h4>
+        <p><i class="fa-solid fa-phone"></i> +91 9637493711</p>
+        <p><i class="fa-brands fa-whatsapp"></i> <a href="https://wa.me/919637493711" target="_blank" style="color:#25d366; text-decoration:none;">Chat with Shop Counter</a></p>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <p>&copy; Mithai Magic. Magic In Every Bite.</p>
+    </div>
+  </footer>
+
+  <script type="module" src="app.js"></script>
+</body>
+</html>
+ic. Magic In Every Bite.</p>
+    </div>
+  </footer>
+
+  <script type="module" src="app.js"></script>
+</body>
+</html>
+aju Katli (250g)', 260)">
+              <i class="fa-solid fa-plus"></i> Add to Box
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <!-- 3. Motichur Ladoo -->
+      <div class="product-card" data-category="sweets">
+        <div class="card-badge">Traditional</div>
+        <img src="https://images.unsplash.com/photo-1541781774459-bb2af2f05b55?w=600&auto=format&fit=crop&q=80" class="product-img" alt="Motichur Ladoo">
+        <div class="product-body">
+          <h3>Motichur Ladoo</h3>
+          <p>Delicate, juicy gram-flour boondi pearls cooked in aromatic cardamom sugar syrup and dry fruits.</p>
+          <div class="product-price-row">
+            <span class="price-label">Price:</span>
+            <span class="product-price">₹170 / 250g</span>
+          </div>
+          <div class="dual-actions">
+            <a href="https://wa.me/919637493711?text=Hi%20Mithai%20Magic,%20I%20want%20to%20order%20Motichur%20Ladoo" target="_blank" class="btn-wa">
+              <i class="fa-brands fa-whatsapp"></i> WhatsApp
+            </a>
+            <button class="btn-add" onclick="window.addToCart('motichur-03', 'Motichur Ladoo (250g)', 170)">
+              <i class="fa-solid fa-plus"></i> Add to Box
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <!-- 4. Kalakand -->
+      <div class="product-card" data-category="sweets">
+        <div class="card-badge">Fresh Milk Sweet</div>
+        <img src="https://images.unsplash.com/photo-1505253758473-96b7015fcd40?w=600&auto=format&fit=crop&q=80" class="product-img" alt="Kalakand">
+        <div class="product-body">
+          <h3>Kalakand</h3>
+          <p>Traditional soft, moist, and grainy milk dessert infused with fine elaichi essence.</p>
+          <div class="product-price-row">
+            <span class="price-label">Price:</span>
+            <span class="product-price">₹190 / 250g</span>
+          </div>
+          <div class="dual-actions">
+            <a href="https://wa.me/919637493711?text=Hi%20Mithai%20Magic,%20I%20want%20to%20order%20Kalakand" target="_blank" class="btn-wa">
+              <i class="fa-brands fa-whatsapp"></i> WhatsApp
+            </a>
+            <button class="btn-add" onclick="window.addToCart('kalakand-04', 'Kalakand (250g)', 190)">
+              <i class="fa-solid fa-plus"></i> Add to Box
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <!-- 5. Rasmalai -->
+      <div class="product-card" data-category="sweets">
+        <div class="card-badge">Royal Treat</div>
+        <img src="https://images.unsplash.com/photo-1589301760014-d929f3979dbc?w=600&auto=format&fit=crop&q=80" class="product-img" alt="Rasmalai">
+        <div class="product-body">
+          <h3>Rasmalai</h3>
+          <p>Spongy cottage cheese discs soaked in thick, chilled sweetened saffron and cardamom milk.</p>
+          <div class="product-price-row">
+            <span class="price-label">Price:</span>
+            <span class="product-price">₹60 / 2 pcs</span>
+          </div>
+          <div class="dual-actions">
+            <a href="https://wa.me/919637493711?text=Hi%20Mithai%20Magic,%20I%20want%20to%20order%20Rasmalai" target="_blank" class="btn-wa">
+              <i class="fa-brands fa-whatsapp"></i> WhatsApp
+            </a>
+            <button class="btn-add" onclick="window.addToCart('rasmalai-05', 'Rasmalai (2 pcs)', 60)">
+              <i class="fa-solid fa-plus"></i> Add to Box
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <!-- 6. Fresh Dairy & Namkeen -->
+      <div class="product-card" data-category="dairy">
+        <div class="card-badge">Daily Fresh</div>
+        <img src="https://images.unsplash.com/photo-1626082927389-6cd097cdc6ec?w=600&auto=format&fit=crop&q=80" class="product-img" alt="Namkeen & Snacks">
+        <div class="product-body">
+          <h3>Farsan &amp; Spicy Namkeen</h3>
+          <p>Crunchy, fresh savory snack mixture, papdi, and crispy farsan for everyday tea time.</p>
+          <div class="product-price-row">
+            <span class="price-label">Price:</span>
+            <span class="product-price">₹90 / 250g</span>
+          </div>
+          <div class="dual-actions">
+            <a href="https://wa.me/919637493711?text=Hi%20Mithai%20Magic,%20I%20want%20to%20order%20Namkeen%20and%20Dairy" target="_blank" class="btn-wa">
+              <i class="fa-brands fa-whatsapp"></i> WhatsApp
+            </a>
+            <button class="btn-add" onclick="window.addToCart('namkeen-06', 'Farsan & Namkeen (250g)', 90)">
+              <i class="fa-solid fa-plus"></i> Add to Box
+            </button>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </main>
+
+  <!-- Slide-out Cart Drawer -->
+  <div class="cart-drawer" id="cartDrawer">
+    <div class="cart-header">
+      <h3><i class="fa-solid fa-bag-shopping"></i> Your Delivery Box</h3>
+      <button class="close-btn" onclick="window.toggleCart()">&times;</button>
+    </div>
+    <div class="cart-body" id="cartItems">
+      <p class="empty-msg">Your delivery box is empty. Add items from the menu!</p>
+    </div>
+    <div class="cart-footer">
+      <div class="cart-summary">
+        <div class="summary-row">
+          <span>Total:</span>
+          <span id="cartSubtotal">₹0</span>
+        </div>
+        <div class="threshold-badge" id="deliveryEligibility">
+          <i class="fa-solid fa-circle-exclamation"></i> Add ₹550 or more for Doorstep Delivery
+        </div>
+      </div>
+      <form id="orderForm" onsubmit="window.submitCustomerOrder(event)">
+        <input type="text" id="custName" placeholder="Your Full Name" required>
+        <input type="tel" id="custPhone" placeholder="10-digit Phone Number" pattern="[0-9]{10}" required>
+        <textarea id="custAddress" rows="2" placeholder="Delivery Address in Charholi (Pune-412105)" required></textarea>
+        <button type="submit" class="btn btn-primary btn-full" id="placeOrderBtn" disabled>
+          Min Order ₹550 Needed
+        </button>
+      </form>
+    </div>
+  </div>
+  <div class="cart-backdrop" id="cartBackdrop" onclick="window.toggleCart()"></div>
+
+  <!-- Footer -->
+  <footer>
+    <div class="footer-container">
+      <div class="footer-col">
+        <div class="logo-badge sm">MM</div>
+        <h3 style="color:#f5d061; margin: 10px 0;">Mithai Magic</h3>
+        <p>Charholi Budruk, Pune, Maharashtra - 412105</p>
+      </div>
+      <div class="footer-col">
+        <h4>Need Instant Help?</h4>
+        <p><i class="fa-solid fa-phone"></i> +91 9637493711</p>
+        <p><i class="fa-brands fa-whatsapp"></i> <a href="https://wa.me/919637493711" target="_blank" style="color:#25d366; text-decoration:none;">Chat with Shop Counter</a></p>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <p>&copy; Mithai Magic. Magic In Every Bite.</p>
+    </div>
+  </footer>
+
+  <script type="module" src="app.js"></script>
+</body>
+</html>
