@@ -1,0 +1,335 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Mithai Magic | Authentic Sweets & Snacks - Charholi Budruk</title>
+  
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@700;800&family=Plus+Jakarta+Sans:wght@500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+  <!-- Top Navigation (No Order Now button) -->
+  <header class="navbar">
+    <div class="nav-container">
+      <a href="#home" class="brand-logo">
+        <div class="logo-badge">MM</div>
+        <div class="brand-text">
+          <span class="brand-title">MITHAI MAGIC</span>
+          <span class="brand-tagline">Magic In Every Bite</span>
+        </div>
+      </a>
+
+      <ul class="nav-links" id="navLinks">
+        <li><a href="#home" class="nav-item">Home</a></li>
+        <li><a href="#menu" class="nav-item">Mithai Menu</a></li>
+        <li><a href="#about" class="nav-item">Our Story</a></li>
+        <li><a href="#contact" class="nav-item">Contact</a></li>
+        <li><a href="admin.html" class="nav-item admin-link" target="_blank"><i class="fa-solid fa-lock"></i> Staff</a></li>
+      </ul>
+
+      <div class="nav-actions">
+        <!-- Floating Cart Trigger Button -->
+        <button class="cart-trigger" id="cartBtn" onclick="window.toggleCart()">
+          <i class="fa-solid fa-bag-shopping"></i>
+          <span class="cart-count" id="cartCount">0</span>
+        </button>
+        <button class="mobile-toggle" id="menuToggle" onclick="document.getElementById('navLinks').classList.toggle('active')">
+          <i class="fa-solid fa-bars"></i>
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <!-- Hero Section -->
+  <section class="hero" id="home">
+    <div class="hero-content">
+      <span class="sub-badge"><i class="fa-solid fa-store"></i> Charholi Budruk, Pune-412105</span>
+      <h1 class="hero-heading">Fresh Indian Sweets & Hot Samosas</h1>
+      <p class="hero-desc">Prepared fresh daily. Doorstep home delivery available on orders of ₹550 and above across Charholi.</p>
+      <div class="hero-btns">
+        <a href="#menu" class="btn btn-primary"><i class="fa-solid fa-bowl-food"></i> Browse Menu</a>
+        <a href="tel:9637493711" class="btn btn-outline"><i class="fa-solid fa-phone"></i> Call Store</a>
+      </div>
+    </div>
+  </section>
+
+  <!-- Notice Bar -->
+  <div class="delivery-notice">
+    <i class="fa-solid fa-truck-fast"></i>
+    <span><strong>Home Delivery Policy:</strong> Minimum order value of <strong>₹550</strong> is required for doorstep delivery in Charholi Budruk.</span>
+  </div>
+
+  <!-- Menu Section -->
+  <section class="menu-section" id="menu">
+    <div class="section-title">
+      <span>Fresh Counter Collection</span>
+      <h2>Our Delicacies</h2>
+      <div class="gold-divider"></div>
+    </div>
+
+    <!-- Products load dynamically from Firebase -->
+    <div class="menu-grid" id="productGrid">
+      <div class="loading-spinner">Loading sweets counter...</div>
+    </div>
+  </section>
+
+  <!-- About Section -->
+  <section class="about-section" id="about">
+    <div class="about-card">
+      <h2>Welcome to Mithai Magic</h2>
+      <p>Located in the heart of Charholi Budruk, Pune, Mithai Magic brings you authentic Indian sweets and savory snacks crafted fresh every single day. From our neighborhood-famous hot crispy samosas to celebration sweets like Kaju Katli, Motichur Ladoo, Kalakand, and chilled Rasmalai, we prioritize hygiene, unmatched taste, and community warmth.</p>
+    </div>
+  </section>
+
+  <!-- Contact Section -->
+  <section class="contact-section" id="contact">
+    <div class="contact-card">
+      <h3>Store Details</h3>
+      <p><i class="fa-solid fa-location-dot"></i> Charholi Budruk, Pune, Maharashtra - 412105</p>
+      <p><i class="fa-solid fa-phone"></i> Phone: <a href="tel:9637493711">+91 9637493711</a></p>
+      <p><i class="fa-solid fa-envelope"></i> Email: <a href="mailto:mithaimagicbk@gmail.com">mithaimagicbk@gmail.com</a></p>
+      <p><i class="fa-solid fa-clock"></i> Open Daily: 7:00 AM – 10:00 PM</p>
+    </div>
+  </section>
+
+  <!-- Slide-out Cart Drawer -->
+  <div class="cart-drawer" id="cartDrawer">
+    <div class="cart-header">
+      <h3><i class="fa-solid fa-bag-shopping"></i> Your Mithai Box</h3>
+      <button class="close-btn" onclick="window.toggleCart()">&times;</button>
+    </div>
+
+    <div class="cart-body" id="cartItems">
+      <p class="empty-msg">Your box is empty. Add your favorite sweets!</p>
+    </div>
+
+    <div class="cart-footer">
+      <div class="cart-summary">
+        <div class="summary-row">
+          <span>Subtotal:</span>
+          <span id="cartSubtotal">₹0</span>
+        </div>
+        <div class="threshold-badge" id="deliveryEligibility">
+          <i class="fa-solid fa-circle-exclamation"></i> Add ₹550 or more for Doorstep Delivery
+        </div>
+      </div>
+
+      <!-- Checkout Form -->
+      <form id="orderForm" onsubmit="window.submitCustomerOrder(event)">
+        <input type="text" id="custName" placeholder="Your Full Name" required>
+        <input type="tel" id="custPhone" placeholder="10-digit Phone Number" pattern="[0-9]{10}" required>
+        <textarea id="custAddress" rows="2" placeholder="Full Delivery Address in Charholi (Pune-412105)" required></textarea>
+        
+        <button type="submit" class="btn btn-primary btn-full" id="placeOrderBtn" disabled>
+          Min Order ₹550 Needed
+        </button>
+      </form>
+    </div>
+  </div>
+  <div class="cart-backdrop" id="cartBackdrop" onclick="window.toggleCart()"></div>
+
+  <!-- Footer -->
+  <footer>
+    <div class="footer-container">
+      <p><strong>Mithai Magic</strong> - Charholi Budruk, Pune - 412105</p>
+      <p>Phone: +91 9637493711 | Email: mithaimagicbk@gmail.com</p>
+      <p class="copyright">&copy; Mithai Magic. Magic In Every Bite.</p>
+    </div>
+  </footer>
+
+  <!-- Module Script -->
+  <script type="module" src="app.js"></script>
+</body>
+</html>
+an>
+                        <a href="https://wa.me/919637493711?text=Hi%20Mithai%20Magic,%20I%20want%20to%20order%20Motichur%20Ladoo" target="_blank" class="order-btn"><i class="fa-brands fa-whatsapp"></i> Order</a>
+                    </div>
+                </div>
+            </div>
+
+            <div class="menu-card" data-category="sweets">
+                <div class="card-badge">Fresh Batch</div>
+                <div class="card-img">
+                    <i class="fa-solid fa-cake-candles"></i>
+                </div>
+                <div class="card-body">
+                    <h3>Kalakand</h3>
+                    <p>Traditional moist, soft, and grainy milk cake infused with aromatic cardamom essence.</p>
+                    <div class="card-footer">
+                        <span class="price">Soft & Juicy</span>
+                        <a href="https://wa.me/919637493711?text=Hi%20Mithai%20Magic,%20I%20want%20to%20order%20Kalakand" target="_blank" class="order-btn"><i class="fa-brands fa-whatsapp"></i> Order</a>
+                    </div>
+                </div>
+            </div>
+
+            <div class="menu-card" data-category="sweets">
+                <div class="card-badge">Royal Treat</div>
+                <div class="card-img">
+                    <i class="fa-solid fa-bowl-food"></i>
+                </div>
+                <div class="card-body">
+                    <h3>Rasmalai</h3>
+                    <p>Spongy cottage cheese patties soaked in thick, sweetened saffron and cardamom flavored creamy milk.</p>
+                    <div class="card-footer">
+                        <span class="price">Chilled & Rich</span>
+                        <a href="https://wa.me/919637493711?text=Hi%20Mithai%20Magic,%20I%20want%20to%20order%20Rasmalai" target="_blank" class="order-btn"><i class="fa-brands fa-whatsapp"></i> Order</a>
+                    </div>
+                </div>
+            </div>
+
+            <div class="menu-card" data-category="dairy">
+                <div class="card-badge">Daily Stock</div>
+                <div class="card-img">
+                    <i class="fa-solid fa-jar"></i>
+                </div>
+                <div class="card-body">
+                    <h3>Fresh Dairy & Namkeen</h3>
+                    <p>Fresh milk products, creamy dahi, crunchy farsan, papdi, and spicy savory snack mixtures.</p>
+                    <div class="card-footer">
+                        <span class="price">Daily Fresh</span>
+                        <a href="https://wa.me/919637493711?text=Hi%20Mithai%20Magic,%20I%20want%20to%20order%20Dairy%20and%20Namkeen" target="_blank" class="order-btn"><i class="fa-brands fa-whatsapp"></i> Order</a>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </section>
+
+    <section class="about-section" id="about">
+        <div class="about-container">
+            <div class="about-text">
+                <span class="sub-badge">About Mithai Magic</span>
+                <h2>Bringing Magic to Every Sweet Memory</h2>
+                <p>Welcome to <strong>Mithai Magic</strong>, your neighborhood confectionery and snack destination in Charholi Budruk, Pune. We are committed to offering delicious taste, hygienic preparation, and warm hospitality.</p>
+                <p>Whether you are craving hot samosas on a rainy evening, picking up fresh sweets like Kaju Katli and Rasmalai for festivals, or ordering daily dairy snacks, we prepare everything with care and great flavor.</p>
+                
+                <div class="about-stats">
+                    <div class="stat">
+                        <h3>100%</h3>
+                        <p>Vegetarian & Hygienic</p>
+                    </div>
+                    <div class="stat">
+                        <h3>Fresh</h3>
+                        <p>Batches Prepared Daily</p>
+                    </div>
+                    <div class="stat">
+                        <h3>Best</h3>
+                        <p>Samosas in Charholi</p>
+                    </div>
+                </div>
+            </div>
+            <div class="about-card-visual">
+                <div class="quote-card">
+                    <i class="fa-solid fa-quote-left quote-icon"></i>
+                    <p>"Good taste comes from genuine care, clean preparation, and serving our community with a smile."</p>
+                    <strong>- Mithai Magic Team</strong>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="contact-section" id="contact">
+        <div class="section-title">
+            <span>Get in Touch</span>
+            <h2>Visit Us in Charholi Budruk</h2>
+            <div class="gold-divider"></div>
+        </div>
+
+        <div class="contact-wrapper">
+            <div class="contact-info-card">
+                <h3>Store Information</h3>
+                <p class="info-desc">Visit us for hot samosas and fresh sweets, or place bulk orders for birthday parties, family gatherings, and festivals.</p>
+                
+                <div class="info-item">
+                    <i class="fa-solid fa-map-pin"></i>
+                    <div>
+                        <strong>Store Location:</strong>
+                        <p>Mithai Magic, Charholi Budruk, Pune, Maharashtra - 412105</p>
+                    </div>
+                </div>
+
+                <div class="info-item">
+                    <i class="fa-solid fa-phone"></i>
+                    <div>
+                        <strong>Call / WhatsApp:</strong>
+                        <p><a href="tel:9637493711" style="color: inherit; text-decoration: none; font-weight: 600;">+91 9637493711</a></p>
+                    </div>
+                </div>
+
+                <div class="info-item">
+                    <i class="fa-solid fa-envelope"></i>
+                    <div>
+                        <strong>Email Address:</strong>
+                        <p><a href="mailto:mithaimagicbk@gmail.com" style="color: inherit; text-decoration: none; font-weight: 600;">mithaimagicbk@gmail.com</a></p>
+                    </div>
+                </div>
+
+                <div class="info-item">
+                    <i class="fa-solid fa-clock"></i>
+                    <div>
+                        <strong>Opening Hours:</strong>
+                        <p>Monday - Sunday: 7:00 AM – 10:00 PM</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="contact-form-box">
+                <h3>Quick Order / Inquiry</h3>
+                <form id="inquiryForm" onsubmit="handleInquiry(event)">
+                    <div class="form-group">
+                        <label for="name">Your Name</label>
+                        <input type="text" id="name" placeholder="e.g. Ramesh Patil" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="phone">Phone Number</label>
+                        <input type="tel" id="phone" placeholder="e.g. 9637493711" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="message">Order Details (Samosa / Sweets quantity)</label>
+                        <textarea id="message" rows="4" placeholder="e.g. Need 10 Samosas and 500g Kaju Katli..." required></textarea>
+                    </div>
+                    <button type="submit" class="btn btn-primary btn-full">Send via WhatsApp</button>
+                    <p id="formFeedback" class="form-feedback"></p>
+                </form>
+            </div>
+        </div>
+    </section>
+
+    <footer>
+        <div class="footer-container">
+            <div class="footer-col">
+                <div class="logo-badge sm">MM</div>
+                <h3>Mithai Magic</h3>
+                <p>Magic in every bite. Fresh sweets, crispy hot samosas, and snacks in Charholi Budruk, Pune.</p>
+            </div>
+            <div class="footer-col">
+                <h4>Quick Links</h4>
+                <ul>
+                    <li><a href="#home">Home</a></li>
+                    <li><a href="#menu">Sweets & Snacks</a></li>
+                    <li><a href="#about">About Our Kitchen</a></li>
+                    <li><a href="#contact">Store Location</a></li>
+                </ul>
+            </div>
+            <div class="footer-col">
+                <h4>Customer Support</h4>
+                <ul>
+                    <li><i class="fa-solid fa-phone"></i> +91 9637493711</li>
+                    <li><i class="fa-solid fa-envelope"></i> mithaimagicbk@gmail.com</li>
+                    <li><i class="fa-solid fa-location-dot"></i> Charholi Budruk, Pune-412105</li>
+                </ul>
+            </div>
+        </div>
+        <div class="footer-bottom">
+            <p>&copy; 2026 Mithai Magic. All Rights Reserved. Charholi Budruk, Pune 412105.</p>
+        </div>
+    </footer>
+
+    <script src="script.js"></script>
+</body>
+</html>
