@@ -47,67 +47,88 @@
   <section class="menu-hero">
     <div class="menu-hero-content">
       <span class="sub-badge"><i class="fa-solid fa-leaf"></i> 100% Vegetarian &amp; Fresh</span>
-      <h1>Our Fresh Daily Menu</h1>
-      <p>Select your favorite sweets and snacks below. Choose <strong>Order on WhatsApp</strong> for quick queries, or <strong>Add to Delivery Box</strong> for home delivery (min ₹550).</p>
+      <h1>Our Counter Menu</h1>
+      <p>Prepared fresh today. Tap <strong>WhatsApp</strong> for direct takeaway orders, or <strong>Add to Box</strong> for home doorstep delivery across Charholi (min ₹550).</p>
     </div>
   </section>
 
   <!-- Delivery Reminder Bar -->
   <div class="delivery-notice">
     <i class="fa-solid fa-truck-fast"></i>
-    <span><strong>Doorstep Delivery Rule:</strong> Add items worth <strong>₹550 or more</strong> for home delivery across Charholi.</span>
+    <span><strong>Doorstep Delivery Rule:</strong> Order value must be <strong>₹550 or above</strong> for home delivery across Charholi Budruk.</span>
   </div>
 
-  <!-- Menu Filtering & Grid -->
+  <!-- Menu Container -->
   <main class="menu-container">
-    <div class="category-tabs">
-      <button class="tab-btn active" onclick="window.filterMenu('all')">All Items</button>
-      <button class="tab-btn" onclick="window.filterMenu('snacks')">Hot Snacks</button>
-      <button class="tab-btn" onclick="window.filterMenu('sweets')">Traditional Sweets</button>
-      <button class="tab-btn" onclick="window.filterMenu('dairy')">Dairy &amp; Namkeen</button>
+    <div class="section-title">
+      <span>Fresh Items Available</span>
+      <h2>Today's Specials</h2>
+      <div class="gold-divider"></div>
     </div>
 
-    <!-- Product Grid (Pre-loaded items + live database sync) -->
+    <!-- Items are ONLY loaded from Firestore admin uploads -->
     <div class="menu-grid" id="productGrid">
-      
-      <!-- 1. Special Samosa -->
-      <div class="product-card" data-category="snacks">
-        <div class="card-badge special">Shop Special</div>
-        <img src="https://images.unsplash.com/photo-1601050690597-df0568f70950?w=600&auto=format&fit=crop&q=80" class="product-img" alt="Special Samosa">
-        <div class="product-body">
-          <h3>Special Hot Samosa</h3>
-          <p>Crispy golden pastry crust with spicy potato &amp; pea filling. Served with mint &amp; tamarind chutney.</p>
-          <div class="product-price-row">
-            <span class="price-label">Price:</span>
-            <span class="product-price">₹20 / pc</span>
-          </div>
-          <div class="dual-actions">
-            <a href="https://wa.me/919637493711?text=Hi%20Mithai%20Magic,%20I%20want%20to%20order%20Special%20Hot%20Samosa" target="_blank" class="btn-wa">
-              <i class="fa-brands fa-whatsapp"></i> WhatsApp
-            </a>
-            <button class="btn-add" onclick="window.addToCart('samosa-01', 'Special Hot Samosa', 20)">
-              <i class="fa-solid fa-plus"></i> Add to Box
-            </button>
-          </div>
+      <div class="loading-state" id="loadingNotice">
+        <i class="fa-solid fa-spinner fa-spin"></i>
+        <p>Loading fresh items from counter...</p>
+      </div>
+    </div>
+  </main>
+
+  <!-- Slide-out Cart Drawer -->
+  <div class="cart-drawer" id="cartDrawer">
+    <div class="cart-header">
+      <h3><i class="fa-solid fa-bag-shopping"></i> Your Delivery Box</h3>
+      <button class="close-btn" onclick="window.toggleCart()">&times;</button>
+    </div>
+    <div class="cart-body" id="cartItems">
+      <p class="empty-msg">Your delivery box is empty. Add items from the menu!</p>
+    </div>
+    <div class="cart-footer">
+      <div class="cart-summary">
+        <div class="summary-row">
+          <span>Total:</span>
+          <span id="cartSubtotal">₹0</span>
+        </div>
+        <div class="threshold-badge" id="deliveryEligibility">
+          <i class="fa-solid fa-circle-exclamation"></i> Add ₹550 or more for Doorstep Delivery
         </div>
       </div>
+      <form id="orderForm" onsubmit="window.submitCustomerOrder(event)">
+        <input type="text" id="custName" placeholder="Your Full Name" required>
+        <input type="tel" id="custPhone" placeholder="10-digit Phone Number" pattern="[0-9]{10}" required>
+        <textarea id="custAddress" rows="2" placeholder="Delivery Address in Charholi (Pune-412105)" required></textarea>
+        <button type="submit" class="btn btn-primary btn-full" id="placeOrderBtn" disabled>
+          Min Order ₹550 Needed
+        </button>
+      </form>
+    </div>
+  </div>
+  <div class="cart-backdrop" id="cartBackdrop" onclick="window.toggleCart()"></div>
 
-      <!-- 2. Kaju Katli -->
-      <div class="product-card" data-category="sweets">
-        <div class="card-badge">Bestseller</div>
-        <img src="https://images.unsplash.com/photo-1599488615731-7e5c2823ff28?w=600&auto=format&fit=crop&q=80" class="product-img" alt="Kaju Katli">
-        <div class="product-body">
-          <h3>Kaju Katli</h3>
-          <p>Traditional diamond-cut sweet made from premium cashew nuts. Smooth melt-in-mouth texture.</p>
-          <div class="product-price-row">
-            <span class="price-label">Price:</span>
-            <span class="product-price">₹260 / 250g</span>
-          </div>
-          <div class="dual-actions">
-            <a href="https://wa.me/919637493711?text=Hi%20Mithai%20Magic,%20I%20want%20to%20order%20Kaju%20Katli" target="_blank" class="btn-wa">
-              <i class="fa-brands fa-whatsapp"></i> WhatsApp
-            </a>
-            <button class="btn-add" onclick="window.addToCart('kaju-02', 'Kaju Katli (250g)', 260)">
+  <!-- Footer -->
+  <footer>
+    <div class="footer-container">
+      <div class="footer-col">
+        <div class="logo-badge sm">MM</div>
+        <h3 style="color:#f5d061; margin: 10px 0;">Mithai Magic</h3>
+        <p>Charholi Budruk, Pune, Maharashtra - 412105</p>
+      </div>
+      <div class="footer-col">
+        <h4>Need Instant Help?</h4>
+        <p><i class="fa-solid fa-phone"></i> +91 9637493711</p>
+        <p><i class="fa-brands fa-whatsapp"></i> <a href="https://wa.me/919637493711" target="_blank" style="color:#25d366; text-decoration:none;">Chat with Shop Counter</a></p>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <p>&copy; Mithai Magic. Magic In Every Bite.</p>
+    </div>
+  </footer>
+
+  <script type="module" src="app.js"></script>
+</body>
+</html>
+aju Katli (250g)', 260)">
               <i class="fa-solid fa-plus"></i> Add to Box
             </button>
           </div>

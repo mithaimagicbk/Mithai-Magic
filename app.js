@@ -19,7 +19,6 @@ import {
   onAuthStateChanged 
 } from "https://www.gstatic.com/firebasejs/12.19.0/firebase-auth.js";
 
-// Your exact configuration from Firebase
 const firebaseConfig = {
   apiKey: "AIzaSyAJYKUY7VU_IGWkUn2FWHk56quBRGhROX0",
   authDomain: "mithai-magic-8e591.firebaseapp.com",
@@ -38,57 +37,50 @@ const auth = getAuth(app);
 let cart = [];
 const MIN_DELIVERY_THRESHOLD = 550;
 
-// Category Filter on menu.html
-window.filterMenu = function(category) {
-  const buttons = document.querySelectorAll('.tab-btn');
-  buttons.forEach(btn => btn.classList.remove('active'));
-  if (event) event.target.classList.add('active');
-
-  const cards = document.querySelectorAll('.product-card');
-  cards.forEach(card => {
-    const cardCat = card.getAttribute('data-category');
-    if (category === 'all' || cardCat === category) {
-      card.style.display = 'flex';
-    } else {
-      card.style.display = 'none';
-    }
-  });
-};
-
-// Dynamically append any new custom sweets added by owner via admin portal
+// Render products dynamically ONLY from Firestore
 const productGrid = document.getElementById('productGrid');
-if (productGrid && window.location.pathname.includes('menu.html')) {
+if (productGrid) {
   onSnapshot(collection(db, 'products'), (snapshot) => {
+    productGrid.innerHTML = '';
+    
+    if (snapshot.empty) {
+      productGrid.innerHTML = `
+        <div class="empty-catalog-box">
+          <i class="fa-solid fa-store-slash"></i>
+          <h3>Counter is being stocked!</h3>
+          <p>Fresh batches are currently being prepared. Check back shortly or contact us directly on WhatsApp.</p>
+          <a href="https://wa.me/919637493711?text=Hi%20Mithai%20Magic,%20what%20items%20are%20available%20today?" target="_blank" class="btn btn-whatsapp" style="margin-top:12px;">
+            <i class="fa-brands fa-whatsapp"></i> Chat on WhatsApp
+          </a>
+        </div>
+      `;
+      return;
+    }
+
     snapshot.forEach((docSnap) => {
-      // Avoid duplicate rendering
-      if (!document.getElementById(`custom-prod-${docSnap.id}`)) {
-        const p = docSnap.data();
-        const customCard = document.createElement('div');
-        customCard.id = `custom-prod-${docSnap.id}`;
-        customCard.className = 'product-card';
-        customCard.setAttribute('data-category', 'sweets');
-        customCard.innerHTML = `
-          <div class="card-badge">Fresh Special</div>
-          <img src="${p.imageUrl}" class="product-img" alt="${p.name}" onerror="this.src='https://images.unsplash.com/photo-1599488615731-7e5c2823ff28?w=600'">
-          <div class="product-body">
-            <h3>${p.name}</h3>
-            <p>${p.description}</p>
-            <div class="product-price-row">
-              <span class="price-label">Price:</span>
-              <span class="product-price">₹${p.rate}</span>
-            </div>
-            <div class="dual-actions">
-              <a href="https://wa.me/919637493711?text=Hi%20Mithai%20Magic,%20I%20want%20to%20order%20${encodeURIComponent(p.name)}" target="_blank" class="btn-wa">
-                <i class="fa-brands fa-whatsapp"></i> WhatsApp
-              </a>
-              <button class="btn-add" onclick="window.addToCart('${docSnap.id}', '${p.name}', ${p.rate})">
-                <i class="fa-solid fa-plus"></i> Add to Box
-              </button>
-            </div>
+      const p = docSnap.data();
+      const card = document.createElement('div');
+      card.className = 'product-card';
+      card.innerHTML = `
+        <img src="${p.imageUrl}" class="product-img" alt="${p.name}">
+        <div class="product-body">
+          <h3>${p.name}</h3>
+          <p>${p.description}</p>
+          <div class="product-price-row">
+            <span class="price-label">Price:</span>
+            <span class="product-price">₹${p.rate}</span>
           </div>
-        `;
-        productGrid.appendChild(customCard);
-      }
+          <div class="dual-actions">
+            <a href="https://wa.me/919637493711?text=Hi%20Mithai%20Magic,%20I%20want%20to%20order%20${encodeURIComponent(p.name)}" target="_blank" class="btn-wa">
+              <i class="fa-brands fa-whatsapp"></i> WhatsApp
+            </a>
+            <button class="btn-add" onclick="window.addToCart('${docSnap.id}', '${p.name.replace(/'/g, "\\'")}', ${p.rate})">
+              <i class="fa-solid fa-plus"></i> Add to Box
+            </button>
+          </div>
+        </div>
+      `;
+      productGrid.appendChild(card);
     });
   });
 }
@@ -270,7 +262,7 @@ function initializeAdminListeners() {
     if (initialLoadComplete) {
       snapshot.docChanges().forEach((change) => {
         if (change.type === 'added') {
-          audio.play().catch(() => console.log('Audio chime requires user gesture'));
+          audio.play().catch(() => console.log('Audio waiting for user gesture'));
         }
       });
     }
@@ -307,7 +299,10 @@ function initializeAdminListeners() {
       const p = docSnap.data();
       list.innerHTML += `
         <div style="display:flex; justify-content:space-between; align-items:center; padding:8px 0; border-bottom:1px solid #eee;">
-          <span><strong>${p.name}</strong> - ₹${p.rate}</span>
+          <div style="display:flex; align-items:center; gap:8px;">
+            <img src="${p.imageUrl}" style="width:36px; height:36px; border-radius:4px; object-fit:cover;">
+            <span><strong>${p.name}</strong> - ₹${p.rate}</span>
+          </div>
           <button style="background:#dc3545; color:#fff; border:none; border-radius:4px; padding:4px 8px; cursor:pointer;" onclick="window.deleteMithai('${docSnap.id}')">
             Delete
           </button>
@@ -321,24 +316,71 @@ window.updateOrderStatus = async function(orderId, newStatus) {
   await updateDoc(doc(db, 'orders', orderId), { status: newStatus });
 };
 
+// Helper: Compress and convert uploaded image file to lightweight Base64 string
+function compressImage(file) {
+  return new Promise((resolve, reject) => {
+    const reader = new FileReader();
+    reader.readAsDataURL(file);
+    reader.onload = (event) => {
+      const img = new Image();
+      img.src = event.target.result;
+      img.onload = () => {
+        const canvas = document.createElement('canvas');
+        const MAX_WIDTH = 600;
+        const scale = MAX_WIDTH / img.width;
+        canvas.width = MAX_WIDTH;
+        canvas.height = img.height * scale;
+
+        const ctx = canvas.getContext('2d');
+        ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
+        // Compress to JPEG with 0.7 quality
+        resolve(canvas.toDataURL('image/jpeg', 0.7));
+      };
+      img.onerror = (err) => reject(err);
+    };
+    reader.onerror = (err) => reject(err);
+  });
+}
+
 window.addNewMithai = async function(e) {
   e.preventDefault();
   const name = document.getElementById('mName').value.trim();
   const rate = Number(document.getElementById('mRate').value);
-  const imageUrl = document.getElementById('mImage').value.trim();
+  const fileInput = document.getElementById('mImageFile');
   const description = document.getElementById('mDesc').value.trim();
+  const uploadBtn = document.getElementById('uploadBtn');
+  const uploadStatus = document.getElementById('uploadStatus');
 
-  await addDoc(collection(db, 'products'), {
-    name,
-    rate,
-    imageUrl,
-    description,
-    available: true,
-    updatedAt: serverTimestamp()
-  });
+  if (!fileInput.files || fileInput.files.length === 0) {
+    alert("Please select a photo from your phone!");
+    return;
+  }
 
-  alert(`${name} added to online counter!`);
-  e.target.reset();
+  try {
+    uploadBtn.disabled = true;
+    uploadStatus.innerText = "Processing and uploading photo...";
+
+    // Convert file to compressed image
+    const base64Image = await compressImage(fileInput.files[0]);
+
+    await addDoc(collection(db, 'products'), {
+      name,
+      rate,
+      imageUrl: base64Image,
+      description,
+      available: true,
+      updatedAt: serverTimestamp()
+    });
+
+    uploadStatus.innerText = "";
+    alert(`${name} uploaded and added to the counter!`);
+    e.target.reset();
+  } catch (err) {
+    alert("Error uploading image: " + err.message);
+    uploadStatus.innerText = "";
+  } finally {
+    uploadBtn.disabled = false;
+  }
 };
 
 window.deleteMithai = async function(productId) {

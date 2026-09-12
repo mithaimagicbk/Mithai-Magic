@@ -9,10 +9,9 @@
 </head>
 <body class="admin-body">
 
-  <!-- Audio Chime for Instant Order Alerts -->
   <audio id="orderAudio" src="https://assets.mixkit.co/active_storage/sfx/2869/2869-preview.mp3" preload="auto"></audio>
 
-  <!-- Login Shield Screen -->
+  <!-- Login Shield -->
   <div class="login-wrapper" id="loginScreen">
     <div class="login-card">
       <div class="logo-badge sm">MM</div>
@@ -21,7 +20,7 @@
       <form onsubmit="window.handleAdminLogin(event)">
         <input type="email" id="adminEmail" placeholder="Owner Email" required>
         <input type="password" id="adminPassword" placeholder="Owner Password" required>
-        <button type="submit" class="btn btn-primary btn-full">Authenticate & Unlock</button>
+        <button type="submit" class="btn btn-primary btn-full">Authenticate &amp; Unlock</button>
       </form>
       <p id="loginError" class="error-msg"></p>
     </div>
@@ -50,27 +49,38 @@
         </div>
       </div>
 
-      <!-- Manage Mithai List -->
+      <!-- Upload New Item via File -->
       <div class="admin-panel">
         <div class="panel-header">
-          <h3><i class="fa-solid fa-plus-circle"></i> Add New Item to Menu</h3>
+          <h3><i class="fa-solid fa-cloud-arrow-up"></i> Upload New Item</h3>
         </div>
         <form class="admin-form" onsubmit="window.addNewMithai(event)">
-          <input type="text" id="mName" placeholder="Mithai / Snack Name (e.g. Special Hot Samosa)" required>
-          <input type="number" id="mRate" placeholder="Price (₹ per kg or plate)" required>
-          <input type="url" id="mImage" placeholder="Image URL (Link to image)" required>
-          <textarea id="mDesc" rows="2" placeholder="Appetizing description (taste, freshness)" required></textarea>
-          <button type="submit" class="btn btn-primary btn-full">Add to Counter</button>
+          <label class="form-label">Mithai or Snack Name:</label>
+          <input type="text" id="mName" placeholder="e.g. Special Hot Samosa" required>
+
+          <label class="form-label">Price (₹ per piece or 250g/kg):</label>
+          <input type="number" id="mRate" placeholder="e.g. 20 or 250" required>
+
+          <label class="form-label">Upload Photo from Phone:</label>
+          <input type="file" id="mImageFile" accept="image/*" required>
+          <small class="upload-note">Select any photo from your gallery/camera</small>
+
+          <label class="form-label" style="margin-top: 10px;">Short Description:</label>
+          <textarea id="mDesc" rows="2" placeholder="e.g. Crispy golden crust with spiced potato and peas" required></textarea>
+
+          <button type="submit" class="btn btn-primary btn-full" id="uploadBtn">
+            <i class="fa-solid fa-plus"></i> Upload &amp; List on Menu
+          </button>
+          <p id="uploadStatus" class="upload-status"></p>
         </form>
 
-        <h4 style="margin: 20px 0 10px;">Current Active Menu Items</h4>
+        <h4 style="margin: 24px 0 10px;">Currently Listed Counter Items</h4>
         <div class="admin-items-list" id="adminItemsList"></div>
       </div>
 
     </div>
   </div>
 
-  <!-- Module Script -->
   <script type="module" src="app.js"></script>
 </body>
 </html>

@@ -48,7 +48,7 @@
     <div class="hero-content">
       <span class="sub-badge"><i class="fa-solid fa-star"></i> Charholi Budruk, Pune-412105</span>
       <h1 class="hero-heading">Fresh Indian Sweets &amp; Hot Samosas</h1>
-      <p class="hero-desc">Crafted fresh daily with unmatched hygiene and classic taste. Browse our full menu or order direct to your doorstep.</p>
+      <p class="hero-desc">Crafted fresh daily with authentic taste, uncompromised cleanliness, and heartfelt hospitality. Explore our collection or order straight to your doorstep.</p>
       <div class="hero-btns">
         <a href="menu.html" class="btn btn-gold"><i class="fa-solid fa-book-open"></i> Explore Full Menu</a>
         <a href="https://wa.me/919637493711?text=Hello%20Mithai%20Magic,%20I%20want%20to%20inquire%20about%20sweets" target="_blank" class="btn btn-whatsapp"><i class="fa-brands fa-whatsapp"></i> WhatsApp Us</a>
@@ -59,49 +59,31 @@
   <!-- Notice Banner -->
   <div class="delivery-notice">
     <i class="fa-solid fa-truck-fast"></i>
-    <span><strong>Doorstep Delivery Policy:</strong> Minimum order of <strong>₹550</strong> required for home delivery in Charholi Budruk. Or order any amount directly on WhatsApp for quick pickup!</span>
+    <span><strong>Doorstep Delivery Policy:</strong> Minimum order of <strong>₹550</strong> required for doorstep delivery in Charholi Budruk. Or order any quantity directly on WhatsApp for quick pickup!</span>
   </div>
 
-  <!-- Featured Specialties Preview -->
-  <section class="home-preview">
-    <div class="section-title">
-      <span>Fresh Highlights</span>
-      <h2>Shop Specialties</h2>
-      <div class="gold-divider"></div>
-    </div>
-
-    <div class="preview-grid">
-      <div class="preview-card special-card">
-        <div class="badge-hot">Shop Special</div>
-        <img src="https://images.unsplash.com/photo-1601050690597-df0568f70950?w=600&auto=format&fit=crop&q=80" alt="Special Samosa">
-        <div class="card-info">
-          <h3>Special Hot Samosa</h3>
-          <p>Crispy golden pastry stuffed with spiced potato and peas filling.</p>
-          <a href="menu.html" class="btn-card">View in Menu &rarr;</a>
-        </div>
-      </div>
-
-      <div class="preview-card">
-        <img src="https://images.unsplash.com/photo-1599488615731-7e5c2823ff28?w=600&auto=format&fit=crop&q=80" alt="Kaju Katli">
-        <div class="card-info">
-          <h3>Kaju Katli</h3>
-          <p>Melt-in-mouth cashew diamond delight, subtly sweet and rich.</p>
-          <a href="menu.html" class="btn-card">View in Menu &rarr;</a>
-        </div>
-      </div>
-
-      <div class="preview-card">
-        <img src="https://images.unsplash.com/photo-1541781774459-bb2af2f05b55?w=600&auto=format&fit=crop&q=80" alt="Motichur Ladoo">
-        <div class="card-info">
-          <h3>Motichur Ladoo</h3>
-          <p>Soft, juicy, fine boondi pearls infused with cardamom flavor.</p>
-          <a href="menu.html" class="btn-card">View in Menu &rarr;</a>
-        </div>
+  <!-- Highlights & Key Features -->
+  <section class="features-bar">
+    <div class="feature-item">
+      <i class="fa-solid fa-fire"></i>
+      <div>
+        <h4>Hot Samosas Daily</h4>
+        <p>Crispy crust, aromatic spiced filling</p>
       </div>
     </div>
-
-    <div class="center-btn">
-      <a href="menu.html" class="btn btn-primary"><i class="fa-solid fa-utensils"></i> Open Full Interactive Menu</a>
+    <div class="feature-item">
+      <i class="fa-solid fa-leaf"></i>
+      <div>
+        <h4>100% Vegetarian</h4>
+        <p>Strictly clean &amp; hygienic preparation</p>
+      </div>
+    </div>
+    <div class="feature-item">
+      <i class="fa-solid fa-gift"></i>
+      <div>
+        <h4>Celebration Packs</h4>
+        <p>Custom festive &amp; wedding sweet boxes</p>
+      </div>
     </div>
   </section>
 
@@ -111,8 +93,8 @@
       <div class="about-text">
         <span class="sub-gold">Crafted with Devotion</span>
         <h2>Welcome to Mithai Magic</h2>
-        <p>Located in <strong>Charholi Budruk, Pune (412105)</strong>, Mithai Magic is committed to serving authentic, mouth-watering traditional sweets, freshly fried hot samosas, and savory snacks prepared under strict hygienic conditions.</p>
-        <p>Whether it's morning breakfast samosas, festive sweet boxes for Diwali and weddings, or daily dairy delicacies, every bite brings authentic taste and warmth.</p>
+        <p>Located in <strong>Charholi Budruk, Pune (412105)</strong>, Mithai Magic is committed to serving authentic, mouth-watering traditional sweets, freshly fried hot samosas, and savory snacks prepared fresh each morning.</p>
+        <p>From everyday tea-time bites to special family occasions, festival celebrations, and bulk party orders, every item from our counter is made to bring pure joy to your family.</p>
         <div class="trust-pills">
           <span><i class="fa-solid fa-check"></i> 100% Vegetarian</span>
           <span><i class="fa-solid fa-check"></i> Fresh Batches Daily</span>
@@ -122,7 +104,7 @@
     </div>
   </section>
 
-  <!-- Contact & Store Information -->
+  <!-- Contact Section -->
   <section class="contact-section" id="contact">
     <div class="section-title">
       <span>Get in Touch</span>
@@ -174,6 +156,37 @@
         <input type="text" id="custName" placeholder="Your Full Name" required>
         <input type="tel" id="custPhone" placeholder="10-digit Phone Number" pattern="[0-9]{10}" required>
         <textarea id="custAddress" rows="2" placeholder="Delivery Address in Charholi (Pune-412105)" required></textarea>
+        <button type="submit" class="btn btn-primary btn-full" id="placeOrderBtn" disabled>
+          Min Order ₹550 Needed
+        </button>
+      </form>
+    </div>
+  </div>
+  <div class="cart-backdrop" id="cartBackdrop" onclick="window.toggleCart()"></div>
+
+  <!-- Footer -->
+  <footer>
+    <div class="footer-container">
+      <div class="footer-col">
+        <div class="logo-badge sm">MM</div>
+        <h3 style="color:#f5d061; margin: 10px 0;">Mithai Magic</h3>
+        <p>Fresh Traditional Sweets, Hot Samosas &amp; Namkeen in Charholi Budruk, Pune-412105.</p>
+      </div>
+      <div class="footer-col">
+        <h4>Direct Contact</h4>
+        <p><i class="fa-solid fa-phone"></i> +91 9637493711</p>
+        <p><i class="fa-solid fa-envelope"></i> mithaimagicbk@gmail.com</p>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <p>&copy; Mithai Magic. Magic In Every Bite. All Rights Reserved.</p>
+    </div>
+  </footer>
+
+  <script type="module" src="app.js"></script>
+</body>
+</html>
+5)" required></textarea>
         <button type="submit" class="btn btn-primary btn-full" id="placeOrderBtn" disabled>
           Min Order ₹550 Needed
         </button>
