@@ -26,8 +26,7 @@
       <ul class="nav-links" id="navLinks">
         <li><a href="index.html" class="nav-item">Home</a></li>
         <li><a href="menu.html" class="nav-item active highlight-nav"><i class="fa-solid fa-utensils"></i> Our Menu</a></li>
-        <li><a href="index.html#about" class="nav-item">Our Story</a></li>
-        <li><a href="index.html#contact" class="nav-item">Contact</a></li>
+        <li><a href="contact.html" class="nav-item">Contact Us</a></li>
         <li><a href="admin.html" class="nav-item admin-link" target="_blank"><i class="fa-solid fa-lock"></i> Staff</a></li>
       </ul>
 
@@ -48,17 +47,17 @@
     <div class="menu-hero-content">
       <span class="sub-badge"><i class="fa-solid fa-leaf"></i> 100% Vegetarian &amp; Fresh</span>
       <h1>Our Counter Menu</h1>
-      <p>Prepared fresh today. Tap <strong>WhatsApp</strong> for direct takeaway orders, or <strong>Add to Box</strong> for home doorstep delivery across Charholi (min ₹550).</p>
+      <p>Prepared fresh today. Tap <strong>WhatsApp</strong> for takeaway orders, or <strong>Add to Box</strong> for home delivery across Charholi (min ₹550).</p>
     </div>
   </section>
 
-  <!-- Delivery Reminder Bar -->
+  <!-- Notice -->
   <div class="delivery-notice">
     <i class="fa-solid fa-truck-fast"></i>
-    <span><strong>Doorstep Delivery Rule:</strong> Order value must be <strong>₹550 or above</strong> for home delivery across Charholi Budruk.</span>
+    <span><strong>Doorstep Delivery:</strong> Order value must be <strong>₹550 or above</strong> for home delivery across Charholi Budruk.</span>
   </div>
 
-  <!-- Menu Container -->
+  <!-- Menu Grid (ONLY loads from Admin Database) -->
   <main class="menu-container">
     <div class="section-title">
       <span>Fresh Items Available</span>
@@ -66,11 +65,11 @@
       <div class="gold-divider"></div>
     </div>
 
-    <!-- Items are ONLY loaded from Firestore admin uploads -->
     <div class="menu-grid" id="productGrid">
-      <div class="loading-state" id="loadingNotice">
+      <!-- Items load dynamically from Firestore via app.js -->
+      <div class="loading-state">
         <i class="fa-solid fa-spinner fa-spin"></i>
-        <p>Loading fresh items from counter...</p>
+        <p>Loading counter items...</p>
       </div>
     </div>
   </main>
@@ -122,6 +121,13 @@
     </div>
     <div class="footer-bottom">
       <p>&copy; Mithai Magic. Magic In Every Bite.</p>
+    </div>
+  </footer>
+
+  <script type="module" src="app.js"></script>
+</body>
+</html>
+ic. Magic In Every Bite.</p>
     </div>
   </footer>
 

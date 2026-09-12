@@ -58,12 +58,13 @@
           <label class="form-label">Mithai or Snack Name:</label>
           <input type="text" id="mName" placeholder="e.g. Special Hot Samosa" required>
 
-          <label class="form-label">Price (₹ per piece or 250g/kg):</label>
-          <input type="number" id="mRate" placeholder="e.g. 20 or 250" required>
+          <!-- RATE FIELD: Accepts both numbers and text (pc, kg, 250g) -->
+          <label class="form-label">Rate / Price with Unit (Text &amp; Numbers):</label>
+          <input type="text" id="mRate" placeholder="e.g. 20 / pc, 170 / 250g, or 600 / kg" required>
 
           <label class="form-label">Upload Photo from Phone:</label>
           <input type="file" id="mImageFile" accept="image/*" required>
-          <small class="upload-note">Select any photo from your gallery/camera</small>
+          <small class="upload-note">Select any photo from your gallery or camera</small>
 
           <label class="form-label" style="margin-top: 10px;">Short Description:</label>
           <textarea id="mDesc" rows="2" placeholder="e.g. Crispy golden crust with spiced potato and peas" required></textarea>

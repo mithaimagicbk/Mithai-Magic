@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Contact Us | Mithai Magic - Charholi Budruk</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@700;800;900&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+  <!-- Navigation -->
+  <header class="navbar">
+    <div class="nav-container">
+      <a href="index.html" class="brand-logo">
+        <div class="logo-badge">MM</div>
+        <div class="brand-text">
+          <span class="brand-title">MITHAI MAGIC</span>
+          <span class="brand-tagline">Magic In Every Bite</span>
+        </div>
+      </a>
+
+      <ul class="nav-links" id="navLinks">
+        <li><a href="index.html" class="nav-item">Home</a></li>
+        <li><a href="menu.html" class="nav-item highlight-nav"><i class="fa-solid fa-utensils"></i> Our Menu</a></li>
+        <li><a href="contact.html" class="nav-item active">Contact Us</a></li>
+        <li><a href="admin.html" class="nav-item admin-link" target="_blank"><i class="fa-solid fa-lock"></i> Staff</a></li>
+      </ul>
+
+      <div class="nav-actions">
+        <button class="cart-trigger" id="cartBtn" onclick="window.toggleCart()">
+          <i class="fa-solid fa-bag-shopping"></i>
+          <span class="cart-count" id="cartCount">0</span>
+        </button>
+        <button class="mobile-toggle" onclick="document.getElementById('navLinks').classList.toggle('active')">
+          <i class="fa-solid fa-bars"></i>
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <!-- Contact Banner -->
+  <section class="menu-hero">
+    <div class="menu-hero-content">
+      <span class="sub-badge"><i class="fa-solid fa-phone"></i> Direct Shop Contact</span>
+      <h1>Get In Touch With Us</h1>
+      <p>Have questions about party orders, today's fresh batches, or bulk booking? Reach out directly via call, WhatsApp, or drop by our counter in Charholi.</p>
+    </div>
+  </section>
+
+  <!-- Contact Details & Direct Form -->
+  <main class="contact-page-container">
+    <div class="contact-cards-row">
+      <div class="contact-box">
+        <i class="fa-solid fa-location-dot contact-icon"></i>
+        <h3>Store Address</h3>
+        <p>Mithai Magic, Charholi Budruk, Pune, Maharashtra - 412105</p>
+      </div>
+
+      <div class="contact-box">
+        <i class="fa-solid fa-phone contact-icon"></i>
+        <h3>Call Directly</h3>
+        <p><a href="tel:9637493711">+91 9637493711</a></p>
+        <a href="https://wa.me/919637493711" target="_blank" class="whatsapp-link"><i class="fa-brands fa-whatsapp"></i> Chat on WhatsApp</a>
+      </div>
+
+      <div class="contact-box">
+        <i class="fa-solid fa-envelope contact-icon"></i>
+        <h3>Email Address</h3>
+        <p><a href="mailto:mithaimagicbk@gmail.com">mithaimagicbk@gmail.com</a></p>
+        <p style="font-size:0.85rem; color:#888; margin-top:4px;">Inquiries &amp; bulk catering</p>
+      </div>
+
+      <div class="contact-box">
+        <i class="fa-solid fa-clock contact-icon"></i>
+        <h3>Operating Hours</h3>
+        <p>Monday - Sunday</p>
+        <p><strong>7:00 AM – 10:00 PM</strong></p>
+      </div>
+    </div>
+
+    <!-- Quick Message / Direct WhatsApp Inquiry Form -->
+    <div class="contact-form-wrapper">
+      <div class="section-title">
+        <span>Fast Response</span>
+        <h2>Send a Direct Message</h2>
+        <div class="gold-divider"></div>
+      </div>
+      <form onsubmit="window.handleWhatsAppContact(event)">
+        <input type="text" id="contactName" placeholder="Your Name" required>
+        <input type="tel" id="contactPhone" placeholder="Your Mobile Number" required>
+        <textarea id="contactMessage" rows="4" placeholder="How can we help you? (e.g. Samosa availability, 5kg Motichur Ladoo bulk order)" required></textarea>
+        <button type="submit" class="btn btn-whatsapp btn-full"><i class="fa-brands fa-whatsapp"></i> Send via WhatsApp</button>
+      </form>
+    </div>
+  </main>
+
+  <!-- Slide-out Cart Drawer -->
+  <div class="cart-drawer" id="cartDrawer">
+    <div class="cart-header">
+      <h3><i class="fa-solid fa-bag-shopping"></i> Your Delivery Box</h3>
+      <button class="close-btn" onclick="window.toggleCart()">&times;</button>
+    </div>
+    <div class="cart-body" id="cartItems">
+      <p class="empty-msg">Your delivery box is empty. Add items from the menu!</p>
+    </div>
+    <div class="cart-footer">
+      <div class="cart-summary">
+        <div class="summary-row">
+          <span>Total:</span>
+          <span id="cartSubtotal">₹0</span>
+        </div>
+        <div class="threshold-badge" id="deliveryEligibility">
+          <i class="fa-solid fa-circle-exclamation"></i> Add ₹550 or more for Doorstep Delivery
+        </div>
+      </div>
+      <form id="orderForm" onsubmit="window.submitCustomerOrder(event)">
+        <input type="text" id="custName" placeholder="Your Full Name" required>
+        <input type="tel" id="custPhone" placeholder="10-digit Phone Number" pattern="[0-9]{10}" required>
+        <textarea id="custAddress" rows="2" placeholder="Delivery Address in Charholi (Pune-412105)" required></textarea>
+        <button type="submit" class="btn btn-primary btn-full" id="placeOrderBtn" disabled>
+          Min Order ₹550 Needed
+        </button>
+      </form>
+    </div>
+  </div>
+  <div class="cart-backdrop" id="cartBackdrop" onclick="window.toggleCart()"></div>
+
+  <!-- Footer -->
+  <footer>
+    <div class="footer-container">
+      <div class="footer-col">
+        <div class="logo-badge sm">MM</div>
+        <h3 style="color:#f5d061; margin: 10px 0;">Mithai Magic</h3>
+        <p>Charholi Budruk, Pune, Maharashtra - 412105</p>
+      </div>
+      <div class="footer-col">
+        <h4>Direct Contact</h4>
+        <p><i class="fa-solid fa-phone"></i> +91 9637493711</p>
+        <p><i class="fa-solid fa-envelope"></i> mithaimagicbk@gmail.com</p>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <p>&copy; Mithai Magic. Magic In Every Bite.</p>
+    </div>
+  </footer>
+
+  <script type="module" src="app.js"></script>
+</body>
+</html>

@@ -224,6 +224,41 @@ h1, h2, h3, .brand-title {
   font-size: 0.82rem;
 }
 
+/* Quick Visit Section */
+.quick-visit-section {
+  max-width: 800px;
+  margin: 50px auto;
+  padding: 0 20px;
+}
+
+.quick-visit-card {
+  background: #fff;
+  border-radius: var(--border-radius);
+  padding: 35px 25px;
+  text-align: center;
+  box-shadow: var(--shadow);
+  border: 1px solid #ecdac8;
+}
+
+.sub-gold {
+  color: var(--gold);
+  font-weight: 700;
+  font-size: 0.85rem;
+  text-transform: uppercase;
+}
+
+.quick-visit-card h2 {
+  color: var(--maroon);
+  font-size: 2rem;
+  margin: 8px 0 16px;
+}
+
+.quick-visit-card p {
+  color: var(--text-muted);
+  margin: 6px 0;
+  font-size: 1rem;
+}
+
 /* Menu Page Hero */
 .menu-hero {
   background: linear-gradient(rgba(84, 7, 19, 0.92), rgba(44, 2, 8, 0.92));
@@ -334,7 +369,7 @@ h1, h2, h3, .brand-title {
 }
 
 .product-img {
-  height: 190px;
+  height: 200px;
   width: 100%;
   object-fit: cover;
   background: #fbeee0;
@@ -432,67 +467,21 @@ h1, h2, h3, .brand-title {
 .btn-gold { background: var(--gold); color: #fff; }
 .btn-whatsapp { background: #25d366; color: #fff; }
 .btn-outline { border: 2px solid #fff; color: #fff; background: transparent; }
+.btn-outline-dark { border: 2px solid var(--maroon); color: var(--maroon); background: transparent; }
 .btn-full { width: 100%; justify-content: center; border-radius: 8px; padding: 12px; }
 
-/* About & Contact */
-.about-section {
-  background: #ffffff;
-  padding: 60px 20px;
-}
-
-.about-wrapper {
-  max-width: 900px;
-  margin: auto;
-  text-align: center;
-}
-
-.sub-gold {
-  color: var(--gold);
-  font-weight: 700;
-  font-size: 0.85rem;
-  text-transform: uppercase;
-}
-
-.about-text h2 {
-  font-size: 2.2rem;
-  color: var(--maroon);
-  margin: 8px 0 16px;
-}
-
-.about-text p {
-  color: var(--text-muted);
-  font-size: 1rem;
-  margin-bottom: 16px;
-}
-
-.trust-pills {
-  display: flex;
-  justify-content: center;
-  gap: 16px;
-  flex-wrap: wrap;
-  margin-top: 20px;
-}
-
-.trust-pills span {
-  background: #fdf5ea;
-  border: 1px solid var(--gold);
-  color: var(--maroon);
-  padding: 6px 14px;
-  border-radius: 20px;
-  font-weight: 700;
-  font-size: 0.85rem;
-}
-
-.contact-section {
-  max-width: 1100px;
-  margin: 50px auto;
+/* Contact Page Layout */
+.contact-page-container {
+  max-width: 1000px;
+  margin: 40px auto 60px;
   padding: 0 20px;
 }
 
-.contact-grid {
+.contact-cards-row {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
   gap: 20px;
+  margin-bottom: 40px;
 }
 
 .contact-box {
@@ -500,7 +489,7 @@ h1, h2, h3, .brand-title {
   border-radius: var(--border-radius);
   padding: 24px;
   text-align: center;
-  border: 1px solid #eee;
+  border: 1px solid #ecdac8;
   box-shadow: var(--shadow);
 }
 
@@ -529,6 +518,16 @@ h1, h2, h3, .brand-title {
   padding: 5px 12px;
   border-radius: 15px;
   font-size: 0.85rem;
+}
+
+.contact-form-wrapper {
+  background: #fff;
+  border-radius: var(--border-radius);
+  padding: 35px 25px;
+  box-shadow: var(--shadow);
+  border: 1px solid #ecdac8;
+  max-width: 600px;
+  margin: auto;
 }
 
 /* Cart Drawer */
@@ -562,8 +561,8 @@ h1, h2, h3, .brand-title {
 
 input, textarea {
   width: 100%;
-  padding: 9px;
-  margin-bottom: 8px;
+  padding: 10px;
+  margin-bottom: 10px;
   border: 1px solid #ccc;
   border-radius: 6px;
 }
@@ -598,7 +597,7 @@ footer {
   color: #ccc;
 }
 
-/* Admin Dashboard Elements */
+/* Admin Elements */
 .admin-body { background: #eef2f5; min-height: 100vh; }
 .login-wrapper { display: flex; align-items: center; justify-content: center; height: 100vh; padding: 20px; }
 .login-card { background: #fff; padding: 30px; border-radius: 12px; width: 100%; max-width: 380px; text-align: center; box-shadow: var(--shadow); }
@@ -634,16 +633,7 @@ footer {
   .footer-container { grid-template-columns: 1fr; }
   .admin-grid { grid-template-columns: 1fr; }
 }
-r-radius: 4px; border: none; cursor: pointer; }
-
-/* Responsive */
-@media(max-width: 768px) {
-  .nav-links {
-    display: none;
-    flex-direction: column;
-    position: absolute;
-    top: 100%;
-    left: 0;
+ left: 0;
     width: 100%;
     background: #fff;
     padding: 20px;

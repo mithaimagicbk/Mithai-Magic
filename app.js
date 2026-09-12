@@ -33,13 +33,20 @@ const app = initializeApp(firebaseConfig);
 const db = getFirestore(app);
 const auth = getAuth(app);
 
-// ================= SHOPPING CART & CLIENT STORE =================
+// Helper: Extracts first numeric price from text like "20 / pc", "170 / 250g", or "₹600 / kg"
+function extractNumericPrice(rateStr) {
+  if (typeof rateStr === 'number') return rateStr;
+  const match = String(rateStr).replace(/,/g, '').match(/\d+(\.\d+)?/);
+  return match ? parseFloat(match[0]) : 0;
+}
+
+// ================= DYNAMIC MENU RENDER (ONLY DATABASE ITEMS) =================
 let cart = [];
 const MIN_DELIVERY_THRESHOLD = 550;
 
-// Render products dynamically ONLY from Firestore
 const productGrid = document.getElementById('productGrid');
 if (productGrid) {
+  // Listen strictly to Firestore products collection
   onSnapshot(collection(db, 'products'), (snapshot) => {
     productGrid.innerHTML = '';
     
@@ -48,8 +55,8 @@ if (productGrid) {
         <div class="empty-catalog-box">
           <i class="fa-solid fa-store-slash"></i>
           <h3>Counter is being stocked!</h3>
-          <p>Fresh batches are currently being prepared. Check back shortly or contact us directly on WhatsApp.</p>
-          <a href="https://wa.me/919637493711?text=Hi%20Mithai%20Magic,%20what%20items%20are%20available%20today?" target="_blank" class="btn btn-whatsapp" style="margin-top:12px;">
+          <p>Fresh batches are currently being prepared. Check back shortly or inquire directly on WhatsApp.</p>
+          <a href="https://wa.me/919637493711?text=Hi%20Mithai%20Magic,%20what%20items%20are%20available%20today?" target="_blank" class="btn btn-whatsapp" style="margin-top:14px;">
             <i class="fa-brands fa-whatsapp"></i> Chat on WhatsApp
           </a>
         </div>
@@ -59,6 +66,7 @@ if (productGrid) {
 
     snapshot.forEach((docSnap) => {
       const p = docSnap.data();
+      const numRate = extractNumericPrice(p.rate);
       const card = document.createElement('div');
       card.className = 'product-card';
       card.innerHTML = `
@@ -74,7 +82,7 @@ if (productGrid) {
             <a href="https://wa.me/919637493711?text=Hi%20Mithai%20Magic,%20I%20want%20to%20order%20${encodeURIComponent(p.name)}" target="_blank" class="btn-wa">
               <i class="fa-brands fa-whatsapp"></i> WhatsApp
             </a>
-            <button class="btn-add" onclick="window.addToCart('${docSnap.id}', '${p.name.replace(/'/g, "\\'")}', ${p.rate})">
+            <button class="btn-add" onclick="window.addToCart('${docSnap.id}', '${p.name.replace(/'/g, "\\'")}', '${p.rate}')">
               <i class="fa-solid fa-plus"></i> Add to Box
             </button>
           </div>
@@ -85,13 +93,14 @@ if (productGrid) {
   });
 }
 
-// Add Item to Cart
+// Add Item to Delivery Box
 window.addToCart = function(id, name, rate) {
+  const numRate = extractNumericPrice(rate);
   const existing = cart.find(item => item.id === id);
   if (existing) {
     existing.qty += 1;
   } else {
-    cart.push({ id, name, rate, qty: 1 });
+    cart.push({ id, name, rateText: String(rate), numericRate: numRate, qty: 1 });
   }
   updateCartUI();
   window.toggleCart(true);
@@ -114,13 +123,14 @@ function updateCartUI() {
   } else {
     cartItems.innerHTML = '';
     cart.forEach((item, index) => {
-      subtotal += item.rate * item.qty;
+      const itemTotal = item.numericRate * item.qty;
+      subtotal += itemTotal;
       count += item.qty;
       cartItems.innerHTML += `
         <div class="cart-item">
           <div>
             <strong>${item.name}</strong><br>
-            <small>₹${item.rate} × ${item.qty} = ₹${item.rate * item.qty}</small>
+            <small>₹${item.rateText} × ${item.qty} = ₹${itemTotal}</small>
           </div>
           <div>
             <button onclick="window.changeQty(${index}, -1)">-</button>
@@ -135,7 +145,6 @@ function updateCartUI() {
   if (cartCount) cartCount.innerText = count;
   if (cartSubtotal) cartSubtotal.innerText = `₹${subtotal}`;
 
-  // Check ₹550 limit for Doorstep Delivery
   if (deliveryEligibility && placeOrderBtn) {
     if (subtotal >= MIN_DELIVERY_THRESHOLD) {
       deliveryEligibility.className = 'threshold-badge eligible';
@@ -177,7 +186,7 @@ window.submitCustomerOrder = async function(e) {
   const name = document.getElementById('custName').value.trim();
   const phone = document.getElementById('custPhone').value.trim();
   const address = document.getElementById('custAddress').value.trim();
-  const subtotal = cart.reduce((acc, curr) => acc + (curr.rate * curr.qty), 0);
+  const subtotal = cart.reduce((acc, curr) => acc + (curr.numericRate * curr.qty), 0);
 
   if (subtotal < MIN_DELIVERY_THRESHOLD) {
     alert("Minimum order value is ₹550 for doorstep delivery in Charholi.");
@@ -188,7 +197,7 @@ window.submitCustomerOrder = async function(e) {
     customerName: name,
     phone: phone,
     address: address,
-    items: cart,
+    items: cart.map(i => ({ name: i.name, rate: i.rateText, qty: i.qty })),
     subtotal: subtotal,
     status: "Pending Approval",
     createdAt: serverTimestamp()
@@ -196,7 +205,7 @@ window.submitCustomerOrder = async function(e) {
 
   try {
     await addDoc(collection(db, 'orders'), orderData);
-    alert("Order submitted to Mithai Magic counter! We will approve it shortly based on today's routine.");
+    alert("Order submitted to Mithai Magic! We will approve it shortly based on today's routine.");
     cart = [];
     updateCartUI();
     window.toggleCart(false);
@@ -204,6 +213,17 @@ window.submitCustomerOrder = async function(e) {
   } catch (err) {
     alert("Error placing order: " + err.message);
   }
+};
+
+// WhatsApp Contact Form on contact.html
+window.handleWhatsAppContact = function(e) {
+  e.preventDefault();
+  const name = document.getElementById('contactName').value.trim();
+  const phone = document.getElementById('contactPhone').value.trim();
+  const message = document.getElementById('contactMessage').value.trim();
+
+  const fullMsg = `Hello Mithai Magic (Charholi),%0A%0A*Name:* ${encodeURIComponent(name)}%0A*Phone:* ${encodeURIComponent(phone)}%0A*Inquiry:* ${encodeURIComponent(message)}`;
+  window.open(`https://wa.me/919637493711?text=${fullMsg}`, '_blank');
 };
 
 // ================= OWNER / ADMIN PORTAL =================
@@ -262,7 +282,7 @@ function initializeAdminListeners() {
     if (initialLoadComplete) {
       snapshot.docChanges().forEach((change) => {
         if (change.type === 'added') {
-          audio.play().catch(() => console.log('Audio waiting for user gesture'));
+          audio.play().catch(() => console.log('Audio requires user interaction first'));
         }
       });
     }
@@ -271,7 +291,7 @@ function initializeAdminListeners() {
     snapshot.forEach((docSnap) => {
       const ord = docSnap.data();
       const statusColor = ord.status === 'Approved' ? 'green' : (ord.status === 'Rejected' ? 'red' : '#b07e15');
-      let itemsHtml = ord.items ? ord.items.map(i => `${i.name} (x${i.qty})`).join(', ') : 'No items';
+      let itemsHtml = ord.items ? ord.items.map(i => `${i.name} (${i.rate}) x${i.qty}`).join(', ') : 'No items';
 
       ordersList.innerHTML += `
         <div class="order-card">
@@ -291,6 +311,7 @@ function initializeAdminListeners() {
     });
   });
 
+  // Admin Products List
   onSnapshot(collection(db, 'products'), (snapshot) => {
     const list = document.getElementById('adminItemsList');
     if (!list) return;
@@ -316,7 +337,7 @@ window.updateOrderStatus = async function(orderId, newStatus) {
   await updateDoc(doc(db, 'orders', orderId), { status: newStatus });
 };
 
-// Helper: Compress and convert uploaded image file to lightweight Base64 string
+// Client-side Image Compression
 function compressImage(file) {
   return new Promise((resolve, reject) => {
     const reader = new FileReader();
@@ -333,7 +354,6 @@ function compressImage(file) {
 
         const ctx = canvas.getContext('2d');
         ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
-        // Compress to JPEG with 0.7 quality
         resolve(canvas.toDataURL('image/jpeg', 0.7));
       };
       img.onerror = (err) => reject(err);
@@ -342,17 +362,18 @@ function compressImage(file) {
   });
 }
 
+// Add New Item with alphanumeric rate (e.g., "20 / pc", "170 / 250g")
 window.addNewMithai = async function(e) {
   e.preventDefault();
   const name = document.getElementById('mName').value.trim();
-  const rate = Number(document.getElementById('mRate').value);
+  const rate = document.getElementById('mRate').value.trim(); // Accepts text + numbers
   const fileInput = document.getElementById('mImageFile');
   const description = document.getElementById('mDesc').value.trim();
   const uploadBtn = document.getElementById('uploadBtn');
   const uploadStatus = document.getElementById('uploadStatus');
 
   if (!fileInput.files || fileInput.files.length === 0) {
-    alert("Please select a photo from your phone!");
+    alert("Please choose a photo from your device!");
     return;
   }
 
@@ -360,12 +381,11 @@ window.addNewMithai = async function(e) {
     uploadBtn.disabled = true;
     uploadStatus.innerText = "Processing and uploading photo...";
 
-    // Convert file to compressed image
     const base64Image = await compressImage(fileInput.files[0]);
 
     await addDoc(collection(db, 'products'), {
       name,
-      rate,
+      rate, // Saved as text string so units like pc, kg, 250g work
       imageUrl: base64Image,
       description,
       available: true,
@@ -373,10 +393,10 @@ window.addNewMithai = async function(e) {
     });
 
     uploadStatus.innerText = "";
-    alert(`${name} uploaded and added to the counter!`);
+    alert(`${name} successfully listed on the menu!`);
     e.target.reset();
   } catch (err) {
-    alert("Error uploading image: " + err.message);
+    alert("Upload failed: " + err.message);
     uploadStatus.innerText = "";
   } finally {
     uploadBtn.disabled = false;
