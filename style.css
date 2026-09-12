@@ -633,15 +633,3 @@ footer {
   .footer-container { grid-template-columns: 1fr; }
   .admin-grid { grid-template-columns: 1fr; }
 }
- left: 0;
-    width: 100%;
-    background: #fff;
-    padding: 20px;
-    box-shadow: 0 10px 20px rgba(0,0,0,0.1);
-  }
-  .nav-links.active { display: flex; }
-  .mobile-toggle { display: block; }
-  .hero-heading { font-size: 2rem; }
-  .footer-container { grid-template-columns: 1fr; }
-  .admin-grid { grid-template-columns: 1fr; }
-}

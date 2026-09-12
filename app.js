@@ -19,6 +19,7 @@ import {
   onAuthStateChanged 
 } from "https://www.gstatic.com/firebasejs/12.19.0/firebase-auth.js";
 
+// Your exact configuration for Mithai Magic
 const firebaseConfig = {
   apiKey: "AIzaSyAJYKUY7VU_IGWkUn2FWHk56quBRGhROX0",
   authDomain: "mithai-magic-8e591.firebaseapp.com",
@@ -33,7 +34,7 @@ const app = initializeApp(firebaseConfig);
 const db = getFirestore(app);
 const auth = getAuth(app);
 
-// Helper: Extracts first numeric price from text like "20 / pc", "170 / 250g", or "₹600 / kg"
+// Helper function: Parses the first numeric price from text like "20 / pc", "170 / 250g", "₹600 / kg"
 function extractNumericPrice(rateStr) {
   if (typeof rateStr === 'number') return rateStr;
   const match = String(rateStr).replace(/,/g, '').match(/\d+(\.\d+)?/);
@@ -66,7 +67,6 @@ if (productGrid) {
 
     snapshot.forEach((docSnap) => {
       const p = docSnap.data();
-      const numRate = extractNumericPrice(p.rate);
       const card = document.createElement('div');
       card.className = 'product-card';
       card.innerHTML = `
@@ -145,6 +145,7 @@ function updateCartUI() {
   if (cartCount) cartCount.innerText = count;
   if (cartSubtotal) cartSubtotal.innerText = `₹${subtotal}`;
 
+  // Enforce ₹550 limit for Doorstep Delivery
   if (deliveryEligibility && placeOrderBtn) {
     if (subtotal >= MIN_DELIVERY_THRESHOLD) {
       deliveryEligibility.className = 'threshold-badge eligible';
@@ -282,7 +283,7 @@ function initializeAdminListeners() {
     if (initialLoadComplete) {
       snapshot.docChanges().forEach((change) => {
         if (change.type === 'added') {
-          audio.play().catch(() => console.log('Audio requires user interaction first'));
+          audio.play().catch(() => console.log('Audio waiting for user gesture'));
         }
       });
     }
