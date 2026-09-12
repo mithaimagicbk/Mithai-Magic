@@ -19,7 +19,7 @@ import {
   onAuthStateChanged 
 } from "https://www.gstatic.com/firebasejs/12.19.0/firebase-auth.js";
 
-// Your exact configuration from Firebase Console
+// Your exact configuration from Firebase
 const firebaseConfig = {
   apiKey: "AIzaSyAJYKUY7VU_IGWkUn2FWHk56quBRGhROX0",
   authDomain: "mithai-magic-8e591.firebaseapp.com",
@@ -30,46 +30,70 @@ const firebaseConfig = {
   measurementId: "G-6QPVTPCW1G"
 };
 
-// Initialize Firebase
 const app = initializeApp(firebaseConfig);
 const db = getFirestore(app);
 const auth = getAuth(app);
 
-// ================= CUSTOMER CART & STOREFRONT LOGIC =================
+// ================= SHOPPING CART & CLIENT STORE =================
 let cart = [];
 const MIN_DELIVERY_THRESHOLD = 550;
 
-// Listen to products added by the owner in real-time
-const productGrid = document.getElementById('productGrid');
-if (productGrid) {
-  const productsCol = collection(db, 'products');
-  onSnapshot(productsCol, (snapshot) => {
-    productGrid.innerHTML = '';
-    if (snapshot.empty) {
-      productGrid.innerHTML = '<p style="grid-column:1/-1; text-align:center; color:#888;">No sweets on the counter yet. Open admin.html to add fresh batches!</p>';
-      return;
+// Category Filter on menu.html
+window.filterMenu = function(category) {
+  const buttons = document.querySelectorAll('.tab-btn');
+  buttons.forEach(btn => btn.classList.remove('active'));
+  if (event) event.target.classList.add('active');
+
+  const cards = document.querySelectorAll('.product-card');
+  cards.forEach(card => {
+    const cardCat = card.getAttribute('data-category');
+    if (category === 'all' || cardCat === category) {
+      card.style.display = 'flex';
+    } else {
+      card.style.display = 'none';
     }
+  });
+};
+
+// Dynamically append any new custom sweets added by owner via admin portal
+const productGrid = document.getElementById('productGrid');
+if (productGrid && window.location.pathname.includes('menu.html')) {
+  onSnapshot(collection(db, 'products'), (snapshot) => {
     snapshot.forEach((docSnap) => {
-      const p = docSnap.data();
-      productGrid.innerHTML += `
-        <div class="product-card">
-          <img src="${p.imageUrl}" class="product-img" alt="${p.name}" onerror="this.src='https://images.unsplash.com/photo-1599488615731-7e5c2823ff28?w=500'">
+      // Avoid duplicate rendering
+      if (!document.getElementById(`custom-prod-${docSnap.id}`)) {
+        const p = docSnap.data();
+        const customCard = document.createElement('div');
+        customCard.id = `custom-prod-${docSnap.id}`;
+        customCard.className = 'product-card';
+        customCard.setAttribute('data-category', 'sweets');
+        customCard.innerHTML = `
+          <div class="card-badge">Fresh Special</div>
+          <img src="${p.imageUrl}" class="product-img" alt="${p.name}" onerror="this.src='https://images.unsplash.com/photo-1599488615731-7e5c2823ff28?w=600'">
           <div class="product-body">
             <h3>${p.name}</h3>
             <p>${p.description}</p>
-            <div class="product-footer">
+            <div class="product-price-row">
+              <span class="price-label">Price:</span>
               <span class="product-price">₹${p.rate}</span>
-              <button class="btn btn-primary" onclick="window.addToCart('${docSnap.id}', '${p.name}', ${p.rate})">
-                <i class="fa-solid fa-plus"></i> Add
+            </div>
+            <div class="dual-actions">
+              <a href="https://wa.me/919637493711?text=Hi%20Mithai%20Magic,%20I%20want%20to%20order%20${encodeURIComponent(p.name)}" target="_blank" class="btn-wa">
+                <i class="fa-brands fa-whatsapp"></i> WhatsApp
+              </a>
+              <button class="btn-add" onclick="window.addToCart('${docSnap.id}', '${p.name}', ${p.rate})">
+                <i class="fa-solid fa-plus"></i> Add to Box
               </button>
             </div>
           </div>
-        </div>
-      `;
+        `;
+        productGrid.appendChild(customCard);
+      }
     });
   });
 }
 
+// Add Item to Cart
 window.addToCart = function(id, name, rate) {
   const existing = cart.find(item => item.id === id);
   if (existing) {
@@ -94,7 +118,7 @@ function updateCartUI() {
   let count = 0;
 
   if (cart.length === 0) {
-    cartItems.innerHTML = '<p class="empty-msg">Your box is empty. Add your favorite sweets!</p>';
+    cartItems.innerHTML = '<p class="empty-msg">Your delivery box is empty. Add items from the menu!</p>';
   } else {
     cartItems.innerHTML = '';
     cart.forEach((item, index) => {
@@ -116,21 +140,23 @@ function updateCartUI() {
     });
   }
 
-  cartCount.innerText = count;
-  cartSubtotal.innerText = `₹${subtotal}`;
+  if (cartCount) cartCount.innerText = count;
+  if (cartSubtotal) cartSubtotal.innerText = `₹${subtotal}`;
 
-  // Enforce the ₹550 Doorstep Delivery Limit
-  if (subtotal >= MIN_DELIVERY_THRESHOLD) {
-    deliveryEligibility.className = 'threshold-badge eligible';
-    deliveryEligibility.innerHTML = `<i class="fa-solid fa-circle-check"></i> Eligible for Doorstep Delivery in Charholi!`;
-    placeOrderBtn.disabled = false;
-    placeOrderBtn.innerText = `Place Doorstep Order (₹${subtotal})`;
-  } else {
-    deliveryEligibility.className = 'threshold-badge';
-    const remaining = MIN_DELIVERY_THRESHOLD - subtotal;
-    deliveryEligibility.innerHTML = `<i class="fa-solid fa-circle-exclamation"></i> Add ₹${remaining} more to qualify for Doorstep Delivery`;
-    placeOrderBtn.disabled = true;
-    placeOrderBtn.innerText = `Min Order ₹550 Needed`;
+  // Check ₹550 limit for Doorstep Delivery
+  if (deliveryEligibility && placeOrderBtn) {
+    if (subtotal >= MIN_DELIVERY_THRESHOLD) {
+      deliveryEligibility.className = 'threshold-badge eligible';
+      deliveryEligibility.innerHTML = `<i class="fa-solid fa-circle-check"></i> Eligible for Doorstep Delivery in Charholi!`;
+      placeOrderBtn.disabled = false;
+      placeOrderBtn.innerText = `Place Doorstep Order (₹${subtotal})`;
+    } else {
+      deliveryEligibility.className = 'threshold-badge';
+      const remaining = MIN_DELIVERY_THRESHOLD - subtotal;
+      deliveryEligibility.innerHTML = `<i class="fa-solid fa-circle-exclamation"></i> Add ₹${remaining} more to qualify for Doorstep Delivery`;
+      placeOrderBtn.disabled = true;
+      placeOrderBtn.innerText = `Min Order ₹550 Needed`;
+    }
   }
 }
 
@@ -147,10 +173,10 @@ window.toggleCart = function(forceOpen = false) {
 
   if (forceOpen) {
     drawer.classList.add('open');
-    backdrop.classList.add('open');
+    if (backdrop) backdrop.classList.add('open');
   } else {
     drawer.classList.toggle('open');
-    backdrop.classList.toggle('open');
+    if (backdrop) backdrop.classList.toggle('open');
   }
 };
 
@@ -188,7 +214,7 @@ window.submitCustomerOrder = async function(e) {
   }
 };
 
-// ================= SECURE OWNER / ADMIN LOGIC =================
+// ================= OWNER / ADMIN PORTAL =================
 const loginScreen = document.getElementById('loginScreen');
 const adminDashboard = document.getElementById('adminDashboard');
 
@@ -213,9 +239,9 @@ window.handleAdminLogin = async function(e) {
 
   try {
     await signInWithEmailAndPassword(auth, email, pass);
-    errEl.innerText = '';
+    if (errEl) errEl.innerText = '';
   } catch (err) {
-    errEl.innerText = "Invalid credentials: " + err.message;
+    if (errEl) errEl.innerText = "Invalid credentials: " + err.message;
   }
 };
 
@@ -228,13 +254,12 @@ function initializeAdminListeners() {
   const audio = document.getElementById('orderAudio');
   const ordersQuery = query(collection(db, 'orders'), orderBy('createdAt', 'desc'));
 
-  // Listen for Orders
   onSnapshot(ordersQuery, (snapshot) => {
     const ordersList = document.getElementById('ordersList');
     const orderCountBadge = document.getElementById('orderCountBadge');
     if (!ordersList) return;
 
-    orderCountBadge.innerText = `${snapshot.size} Total`;
+    if (orderCountBadge) orderCountBadge.innerText = `${snapshot.size} Total`;
     ordersList.innerHTML = '';
 
     if (snapshot.empty) {
@@ -245,7 +270,7 @@ function initializeAdminListeners() {
     if (initialLoadComplete) {
       snapshot.docChanges().forEach((change) => {
         if (change.type === 'added') {
-          audio.play().catch(() => console.log('Audio waiting for user interaction'));
+          audio.play().catch(() => console.log('Audio chime requires user gesture'));
         }
       });
     }
@@ -274,7 +299,6 @@ function initializeAdminListeners() {
     });
   });
 
-  // Listen for Products
   onSnapshot(collection(db, 'products'), (snapshot) => {
     const list = document.getElementById('adminItemsList');
     if (!list) return;
@@ -318,7 +342,7 @@ window.addNewMithai = async function(e) {
 };
 
 window.deleteMithai = async function(productId) {
-  if (confirm("Remove this mithai item from the online counter?")) {
+  if (confirm("Remove this item from the online counter?")) {
     await deleteDoc(doc(db, 'products', productId));
   }
 };
